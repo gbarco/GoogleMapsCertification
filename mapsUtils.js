@@ -3,16 +3,20 @@ function buildMap() {
         lat: -34.5681375,
         lng: -58.4544698
     };
-    var initialLocation;
+    /*var initialLocation;
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-            map.setCenter(initialLocation);
-        });
+        try {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                map.setCenter(initialLocation);
+            });
+        } catch (err) {
+            initialLocation = buenosAires;
+        }
     } else {
         initialLocation = buenosAires;
-    }
-
+    }*/
+    initialLocation = buenosAires;
     return new google.maps.Map(document.getElementById('map'), {
         center: initialLocation,
         zoom: 14,
@@ -148,9 +152,6 @@ function buildMap() {
 }
 
 function onMarkerClick(marker, map) {
-    console.log(marker);
-    console.log(map);
-    alert('aaaaaa ' + getInfoFromMarker(marker));
     var iw = new google.maps.InfoWindow();
 
     iw.setContent(getInfoFromMarker(marker));
@@ -159,7 +160,7 @@ function onMarkerClick(marker, map) {
 
 function getInfoFromMarker(marker) {
     var content = '<div id="bodyContent">' +
-        '<p><b>Globant ' + aMarker.getPosition() + '</b></p>' +
+        '<p><b>Globant ' + marker.getPosition() + '</b></p>' +
         '</div>';
     return content;
 }
