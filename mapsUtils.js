@@ -160,12 +160,12 @@ function onMarkerClick(event, map) {
 }
 
 function getInfoFromMarker(marker) {
-    var latlng = {lat: parseFloat(marker.latLng.lat()), lng: parseFloat(marker.latLng.lng())};
-    geocoder.geocode({'location': latlng}, function(results, status) {
+    var latlng = { lat: parseFloat(marker.latLng.lat()), lng: parseFloat(marker.latLng.lng()) };
+    geocoder.geocode({ 'location': latlng }, function(results, status) {
         if (status === google.maps.GeocoderStatus.OK) {
             if (results[0]) {
                 infoWindow.setContent(
-                    '<div><b>Globant ' + 
+                    '<div><b>Globant ' +
                     buildGlobantLocation(results[0]) +
                     '</b></div>');
             }
@@ -178,8 +178,7 @@ function buildGlobantLocation(location) {
 }
 
 function extractShortNameFrom(addressComponents, component) {
-    for (var i=0; i<addressComponents.length; i++)
-    {
+    for (var i = 0; i < addressComponents.length; i++) {
         if (addressComponents[i].types[0] == component) {
             return addressComponents[i].short_name;
         }
@@ -197,7 +196,7 @@ function showCurrentPosition(latLng) {
         function() {
             infoWindow.setContent("You are here!");
             infoWindow.open(map, currentPositionMarker);
-    });
+        });
 }
 
 function onPlaceChanged() {
@@ -220,7 +219,7 @@ function onPlaceChanged() {
                 map.fitBounds(place.geometry.viewport);
             } else {
                 map.setCenter(place.geometry.location);
-                map.setZoom(14);  // Why 14? Because it looks good.
+                map.setZoom(14); // Why 14? Because it looks good.
             }
             showCurrentPosition(place.geometry.location);
             currentPositionMarker.setVisible(true);
