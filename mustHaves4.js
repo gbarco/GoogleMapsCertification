@@ -1,6 +1,7 @@
 function centerOnUserLocation() {
     navigator.geolocation.getCurrentPosition(function(position) {
         map.panTo(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+        showCurrentPosition(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
     });
 }
 

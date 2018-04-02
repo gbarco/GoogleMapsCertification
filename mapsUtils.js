@@ -173,3 +173,44 @@ function extractShortNameFrom(addressComponents, component) {
     }
     return '';
 }
+
+function showCurrentPosition(latLng) {
+    currentPositionMarker = new google.maps.Marker({
+        position: latLng,
+        map: map,
+        animation: google.maps.Animation.DROP
+    });
+    google.maps.event.addListener(currentPositionMarker, 'click',
+        function() {
+            infoWindow.setContent("You are here!");
+            infoWindow.open(map, currentPositionMarker);
+    });
+}
+
+function onPlaceChanged() {
+    infoWindow.close();
+    if (currentPositionMarker) {
+        currentPositionMarker.setVisible(false);
+    }
+    if (autocomplete) {
+        var place = autocomplete.getPlace();
+        if (place) {
+            if (!place.geometry) {
+                // User entered the name of a Place that was not suggested and
+                // pressed the Enter key, or the Place Details request failed.
+                window.alert("No details available for input: '" + place.name + "'");
+                return;
+            }
+
+            // If the place has a geometry, then present it on a map.
+            if (place.geometry.viewport) {
+                map.fitBounds(place.geometry.viewport);
+            } else {
+                map.setCenter(place.geometry.location);
+                map.setZoom(14);  // Why 14? Because it looks good.
+            }
+            showCurrentPosition(place.geometry.location);
+            currentPositionMarker.setVisible(true);
+        }
+    }
+}
