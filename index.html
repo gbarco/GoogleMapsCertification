@@ -81,6 +81,11 @@
                 shape: shape
             };
 
+            map.data.loadGeoJson('locations.json');
+            map.data.setStyle(function(feature){
+                return {icon: image};
+            });
+/*
             for (i = 0; i < locations.length; i++) {
                 aMarker = new google.maps.Marker({
                     position: locations[i],
@@ -92,7 +97,7 @@
                     onMarkerClick(this, map);
                 });
             }
-
+*/
             // add Autocomplete suport
             autocomplete = new google.maps.places.Autocomplete(
                 /** @type {!HTMLInputElement} */

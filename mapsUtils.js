@@ -17,7 +17,7 @@ function buildMap() {
         initialLocation = buenosAires;
     }*/
     initialLocation = buenosAires;
-    return new google.maps.Map(document.getElementById('map'), {
+    var map =  new google.maps.Map(document.getElementById('map'), {
         center: initialLocation,
         zoom: 14,
         mapTypeId: 'roadmap',
@@ -149,6 +149,8 @@ function buildMap() {
             style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
         }
     });
+
+    return map;
 }
 
 function onMarkerClick(marker, map) {
