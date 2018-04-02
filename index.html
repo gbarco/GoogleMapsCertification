@@ -15,9 +15,26 @@
             margin: 0;
             padding: 0;
         }
+        
+        .container {
+            position: relative;
+        }
+        
+        #distances {
+            float: left;
+            width: 40%;
+            background-color: blue;
+        }
+        
+        #directions {
+            float: left;
+            width: 40%;
+            background-color: red;
+        }
     </style>
     <script src="locations.js"></script>
     <script src="mapsUtils.js"></script>
+    <script src="mustHaves4.js"></script>
 </head>
 
 <body style="margin:0px; padding:0px;" onload="initMap()">
@@ -45,7 +62,12 @@
     <div>
         <select id="locationSelect" style="width: 10%; visibility: hidden"></select>
     </div>
+    <div class="container">
+        <div id="distances">&nbsp;</div>
+        <div id="directions">&nbsp;</div>
+    </div>
     <div id="map" style="width: 70%; height: 90%"></div>
+
     <div id="listing">
         <table id="resultsTable">
             <tbody id="results"></tbody>
@@ -59,6 +81,7 @@
 
         function initMap() {
             map = buildMap();
+
             infoWindow = new google.maps.InfoWindow();
             searchButton = document.getElementById("searchButton").onclick = searchLocations;
             locationSelect = document.getElementById("locationSelect");
@@ -82,27 +105,16 @@
             };
 
             map.data.loadGeoJson('locations.json');
-            map.data.setStyle(function(feature){
-                return {icon: image};
+            map.data.setStyle(function(feature) {
+                return {
+                    icon: image
+                };
             });
-            
+
             map.data.addListener('click', function(event) {
                 onMarkerClick(event, map);
             });
 
-/*
-            for (i = 0; i < locations.length; i++) {
-                aMarker = new google.maps.Marker({
-                    position: locations[i],
-                    map: map,
-                    title: "Globant",
-                    icon: image
-                });
-                google.maps.event.addListener(aMarker, 'click', function() {
-                    onMarkerClick(this, map);
-                });
-            }
-*/
             // add Autocomplete suport
             autocomplete = new google.maps.places.Autocomplete(
                 /** @type {!HTMLInputElement} */
@@ -112,6 +124,9 @@
 
             // add event to handle autocomplete
             //autocomplete.addListener('place_changed', onPlaceChanged);
+
+            centerOnUserLocation();
+            showFeatureDistanceFromUserLocation();
         }
 
         function searchLocations() {
@@ -217,7 +232,7 @@
 
         function doNothing() {}
     </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBd1Z7QILZqANje0vMIv4ijTpg033XhUB0&libraries=places&callback=initMap"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBd1Z7QILZqANje0vMIv4ijTpg033XhUB0&libraries=places&callback=initMap"></script>
 </body>
 
 </html>
