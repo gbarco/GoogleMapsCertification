@@ -1,3 +1,15 @@
+function initGlobalComponents() {
+    window.currentPositionMarker = new google.maps.Marker;
+
+    window.infoWindow = new google.maps.InfoWindow;
+    window.geocoder = new google.maps.Geocoder;
+
+    window.directionsService = new google.maps.DirectionsService;
+    window.directionsDisplay = new google.maps.DirectionsRenderer;
+
+    window.map = buildMap();
+}
+
 function buildMap() {
     var buenosAires = {
         lat: -34.5681375,
@@ -13,19 +25,26 @@ function buildMap() {
         }
     });
 
-    window.directionsService = new google.maps.DirectionsService;
-    window.directionsDisplay = new google.maps.DirectionsRenderer;
-
     initDirectionsDisplay();
 
     return map;
 }
 
-function initDirectionsDisplay() {
-    directionsDisplay.setMap(null);
-    directionsDisplay.setMap(map);
-    directionsDisplay.setPanel(null);
-    directionsDisplay.setPanel(document.getElementById("directions"));
+function initDOMListeners() {
+    searchButton = document.getElementById("searchButton").onclick = searchLocations;
+    locationSelect = document.getElementById("locationSelect");
+    locationSelect.onchange = function() {
+        var markerNum = locationSelect.options[locationSelect.selectedIndex].value;
+        if (markerNum != "none") {
+            google.maps.event.trigger(markers[markerNum], 'click');
+        }
+    };
+
+    map.data.addListener('click', function(event) {
+        onMarkerClick(event, map);
+    });
+
+    initAutocomplete();
 }
 
 function onMarkerClick(event, map) {
@@ -34,24 +53,6 @@ function onMarkerClick(event, map) {
     getInfoFromMarker(event);
     infoWindow.open(map);
     showDirectionsFromFeatureToUserLocation(event.feature);
-}
-
-function getInfoFromMarker(marker) {
-    var latlng = { lat: parseFloat(marker.latLng.lat()), lng: parseFloat(marker.latLng.lng()) };
-    geocoder.geocode({ 'location': latlng }, function(results, status) {
-        if (status === google.maps.GeocoderStatus.OK) {
-            if (results[0]) {
-                infoWindow.setContent(
-                    '<div><b>Globant ' +
-                    buildGlobantLocation(results[0]) +
-                    '</b></div>');
-            }
-        }
-    });
-}
-
-function buildGlobantLocation(location) {
-    return extractShortNameFrom(location.address_components, "locality") + '/' + extractShortNameFrom(location.address_components, "country");
 }
 
 function extractShortNameFrom(addressComponents, component) {

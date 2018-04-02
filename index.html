@@ -32,12 +32,13 @@
             background-color: red;
         }
     </style>
-    <script src="locations.js"></script>
-    <script src="mapsUtils.js"></script>
+    <script src="mustHave2.js"></script>
+    <script src="mustHave3.js"></script>
     <script src="mustHave4.js"></script>
     <script src="mustHave5.js"></script>
     <script src="goodToHave1.js"></script>
     <script src="goodToHave2.js"></script>
+    <script src="mapsUtils.js"></script>
 </head>
 
 <body style="margin:0px; padding:0px;" onload="initMap()">
@@ -65,11 +66,13 @@
     <div>
         <select id="locationSelect" style="width: 10%; visibility: hidden"></select>
     </div>
+
+    <div id="map" style="width: 70%; height: 90%"></div>
+
     <div class="container">
         <div id="distances">&nbsp;</div>
         <div id="directions">&nbsp;</div>
     </div>
-    <div id="map" style="width: 70%; height: 90%"></div>
 
     <div id="listing">
         <table id="resultsTable">
@@ -85,73 +88,14 @@
         var geocoder;
 
         function initMap() {
-            map = buildMap();
+            initGlobalComponents();
 
-            currentPositionMarker = new google.maps.Marker;
+            displayAllLocations();
 
-            infoWindow = new google.maps.InfoWindow;
-            geocoder = new google.maps.Geocoder;
-            searchButton = document.getElementById("searchButton").onclick = searchLocations;
-            locationSelect = document.getElementById("locationSelect");
-            locationSelect.onchange = function() {
-                var markerNum = locationSelect.options[locationSelect.selectedIndex].value;
-                if (markerNum != "none") {
-                    google.maps.event.trigger(markers[markerNum], 'click');
-                }
-            };
-            // all Globant offices
-            var shape = {
-                coords: [0, 0, 0, 32, 16, 24, 0, 0],
-                type: 'poly'
-            };
-            var image = {
-                url: 'globant.png',
-                size: new google.maps.Size(24, 32),
-                origin: new google.maps.Point(0, 0),
-                anchor: new google.maps.Point(0, 32),
-                shape: shape
-            };
-
-            map.data.loadGeoJson('locations.json');
-            map.data.setStyle(function(feature) {
-                return {
-                    icon: image
-                };
-            });
-
-            map.data.addListener('click', function(event) {
-                onMarkerClick(event, map);
-            });
-
-            // add Autocomplete suport
-            var autocomplete = new google.maps.places.Autocomplete(
-                (document.getElementById('addressInput')));
-            autocomplete.bindTo('bounds', map);
-
-            // add event to handle autocomplete
-            autocomplete.addListener('place_changed', function() {
-                infoWindow.close();
-                currentPositionMarker.setVisible(false);
-                var place = autocomplete.getPlace();
-                if (!place.geometry) {
-                    // User entered the name of a Place that was not suggested and
-                    // pressed the Enter key, or the Place Details request failed.
-                    window.alert("No details available for input: '" + place.name + "'");
-                    return;
-                }
-
-                // If the place has a geometry, then present it on a map.
-                if (place.geometry.viewport) {
-                    map.fitBounds(place.geometry.viewport);
-                } else {
-                    map.setCenter(place.geometry.location);
-                    map.setZoom(14); // Why 14? Because it looks good.
-                }
-                showCurrentPosition(place.geometry.location);
-                currentPositionMarker.setVisible(true);
-            });
+            initDOMListeners();
 
             centerOnUserLocation();
+
             showFeatureDistanceFromUserLocation();
         }
 

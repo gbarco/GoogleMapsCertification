@@ -1,3 +1,10 @@
+function initDirectionsDisplay() {
+    directionsDisplay.setMap(null);
+    directionsDisplay.setMap(map);
+    directionsDisplay.setPanel(null);
+    directionsDisplay.setPanel(document.getElementById("directions"));
+}
+
 function showDirectionsFromFeatureToUserLocation(feature) {
     initDirectionsDisplay();
     navigator.geolocation.getCurrentPosition(function(position) {
