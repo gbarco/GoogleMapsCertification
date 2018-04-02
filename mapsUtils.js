@@ -1,5 +1,5 @@
-function initGlobalComponents() {
-    window.currentPositionMarker = new google.maps.Marker;
+function initGlobalMapsComponents() {
+    window.markers = [];
 
     window.infoWindow = new google.maps.InfoWindow;
     window.geocoder = new google.maps.Geocoder;
@@ -8,6 +8,16 @@ function initGlobalComponents() {
     window.directionsDisplay = new google.maps.DirectionsRenderer;
 
     window.map = buildMap();
+
+    window.currentPosition = map.getCenter();
+}
+
+function initGlobalDOMShortcuts() {
+    window.drivingDistancePanel = document.getElementById("drivingDistancePanel");
+    window.directionsPanel = document.getElementById("directionsPanel");
+    window.nearestLocationsPanel = document.getElementById("nearestLocationsPanel")
+    window.mapPanel = document.getElementById("map");
+    window.locationSelect = document.getElementById("locationSelect");
 }
 
 function buildMap() {
@@ -15,9 +25,9 @@ function buildMap() {
         lat: -34.5681375,
         lng: -58.4544698
     };
-    var map = new google.maps.Map(document.getElementById('map'), {
+    var builtMap = new google.maps.Map(mapPanel, {
         center: buenosAires,
-        zoom: 14,
+        zoom: 5,
         mapTypeId: 'roadmap',
         styles: getMapStyle(),
         mapTypeControlOptions: {
@@ -25,21 +35,10 @@ function buildMap() {
         }
     });
 
-    initDirectionsDisplay();
-
-    return map;
+    return builtMap;
 }
 
 function initDOMListeners() {
-    searchButton = document.getElementById("searchButton").onclick = searchLocations;
-    locationSelect = document.getElementById("locationSelect");
-    locationSelect.onchange = function() {
-        var markerNum = locationSelect.options[locationSelect.selectedIndex].value;
-        if (markerNum != "none") {
-            google.maps.event.trigger(markers[markerNum], 'click');
-        }
-    };
-
     map.data.addListener('click', function(event) {
         onMarkerClick(event, map);
     });
@@ -52,7 +51,7 @@ function onMarkerClick(event, map) {
     infoWindow.setOptions({ pixelOffset: new google.maps.Size(0, -30) });
     getInfoFromMarker(event);
     infoWindow.open(map);
-    showDirectionsFromFeatureToUserLocation(event.feature);
+    showDirectionsFromLocationMarker(event.feature);
 }
 
 function extractShortNameFrom(addressComponents, component) {
@@ -65,16 +64,17 @@ function extractShortNameFrom(addressComponents, component) {
 }
 
 function showCurrentPosition(latLng) {
-    currentPositionMarker = new google.maps.Marker({
+    window.currentPositionMarker = new google.maps.Marker({
         position: latLng,
         map: map,
         animation: google.maps.Animation.DROP
     });
-    google.maps.event.addListener(currentPositionMarker, 'click',
-        function() {
-            infoWindow.setContent("You are here!");
-            infoWindow.open(map, currentPositionMarker);
-        });
+    google.maps.event.addListener(currentPositionMarker, 'click', function() {
+        infoWindow.setContent("You are here!");
+        infoWindow.open(map, currentPositionMarker);
+    });
+    currentPosition = latLng;
+    displayNearestLocations();
 }
 
 function onPlaceChanged() {
@@ -97,10 +97,21 @@ function onPlaceChanged() {
                 map.fitBounds(place.geometry.viewport);
             } else {
                 map.setCenter(place.geometry.location);
-                map.setZoom(14); // Why 14? Because it looks good.
+                map.setZoom(5);
             }
             showCurrentPosition(place.geometry.location);
             currentPositionMarker.setVisible(true);
         }
     }
+    currentPosition = map.getCenter();
+    displayNearestLocations();
+    console.log("onPlaceChanged");
+}
+
+function isDivInnerHTMLEmpty(div) {
+    return div.innerHTML.trim() == '';
+}
+
+function addStringToDivInnerHTML(div, string) {
+    div.innerHTML = div.innerHTML + string;
 }
