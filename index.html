@@ -56,10 +56,12 @@
         var markers = [];
         var infoWindow;
         var locationSelect;
+        var geocoder;
 
         function initMap() {
             map = buildMap();
             infoWindow = new google.maps.InfoWindow();
+            geocoder = new google.maps.Geocoder;
             searchButton = document.getElementById("searchButton").onclick = searchLocations;
             locationSelect = document.getElementById("locationSelect");
             locationSelect.onchange = function() {
@@ -85,7 +87,7 @@
             map.data.setStyle(function(feature){
                 return {icon: image};
             });
-            
+
             map.data.addListener('click', function(event) {
                 onMarkerClick(event, map);
             });

@@ -161,9 +161,28 @@ function onMarkerClick(event, map) {
 }
 
 function getInfoFromMarker(marker) {
-    
-    var content = '<div id="bodyContent">' +
-        '<p><b>Globant ' + marker.latLng.lat() + ' ' + marker.latLng.lng() + '</b></p>' +
+    var address = geocodeLatLng(marker.latLng);
+    var content = content = '<div id="bodyContent">' +
+        '<p><b>Globant</b></p>' +
         '</div>';
+    if (address) {
+        content = '<div id="bodyContent">' +
+        '<p><b>Globant ' + address + '</b></p>' +
+        '</div>';
+    }
+
     return content;
+}
+
+function geocodeLatLng(latLng) {
+    var addresses;
+    var latlng = {lat: parseFloat(latLng.lat()), lng: parseFloat(latLng.lng())};
+    geocoder.geocode({'location': latlng}, function(results, status) {
+        if (status === google.maps.GeocoderStatus.OK) {
+            if (results[0]) {
+                addresses = results;
+            }
+        }
+    });
+    return addresses;
 }
