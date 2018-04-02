@@ -20,16 +20,31 @@
             position: relative;
         }
         
-        #distances {
-            float: left;
-            width: 40%;
+        .displayPanel {
+            clear: both;
+            width: 90%;
+            min-height: 1em;
+        }
+        
+        .legendPanel {
+            height: 1em;
+        }
+        
+        .drivingDistancePanel {
             background-color: blue;
         }
         
-        #directions {
-            float: left;
-            width: 40%;
+        .directionsPanel {
             background-color: red;
+        }
+        
+        .nearestLocationsPanel {
+            background-color: yellow;
+        }
+        
+        #map {
+            width: 90%;
+            height: 50%
         }
     </style>
     <script src="mustHave2.js"></script>
@@ -38,6 +53,7 @@
     <script src="mustHave5.js"></script>
     <script src="goodToHave1.js"></script>
     <script src="goodToHave2.js"></script>
+    <script src="extras.js"></script>
     <script src="mapsUtils.js"></script>
 </head>
 
@@ -45,33 +61,19 @@
     <div>
         <label for="addressInput">Search location:</label>
         <input type="text" id="addressInput" size="50" />
-        <label for="radiusSelect">Radius:</label>
-        <select id="radiusSelect" label="Radius">
-      <option value="20480">20480 kms</option>
-      <option value="10240">10240 kms</option>
-      <option value="5120">5120 kms</option>
-      <option value="2560">2560 kms</option>
-      <option value="1280">1280 kms</option>
-      <option value="640">640 kms</option>
-      <option value="320">320 kms</option>
-      <option value="160">160 kms</option>
-      <option value="80">80 kms</option>
-      <option value="40">40 kms</option>
-      <option value="20">20 kms</option>
-      <option value="10" selected>10 kms</option>
-    </select>
-
-        <input type="button" id="searchButton" value="Search" />
     </div>
     <div>
-        <select id="locationSelect" style="width: 10%; visibility: hidden"></select>
+        <div class="legendPanel nearestLocationsPanel">Nearest Locations</div>
+        <div class="legendPanel directionsPanel">Driving Directions</div>
+        <div class="legendPanel drivingDistancePanel">Driving Distance</div>
     </div>
 
-    <div id="map" style="width: 70%; height: 90%"></div>
+    <div id="map"></div>
 
     <div class="container">
-        <div id="distances">&nbsp;</div>
-        <div id="directions">&nbsp;</div>
+        <div id="nearestLocationsPanel" class="displayPanel nearestLocationsPanel">&nbsp;</div>
+        <div id="directionsPanel" class="displayPanel directionsPanel">&nbsp;</div>
+        <div id="drivingDistancePanel" class="displayPanel drivingDistancePanel">&nbsp;</div>
     </div>
 
     <div id="listing">
@@ -80,15 +82,10 @@
         </table>
     </div>
     <script>
-        var map;
-        var currentPositionMarker;
-        var markers = [];
-        var infoWindow;
-        var locationSelect;
-        var geocoder;
-
         function initMap() {
-            initGlobalComponents();
+            initGlobalDOMShortcuts();
+
+            initGlobalMapsComponents();
 
             displayAllLocations();
 
@@ -96,14 +93,14 @@
 
             centerOnUserLocation();
 
+            initDirectionsDisplay();
+
             showFeatureDistanceFromUserLocation();
+
+            displayNearestLocations();
         }
-
-        function searchLocations() {}
-
-        function doNothing() {}
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBd1Z7QILZqANje0vMIv4ijTpg033XhUB0&libraries=places&callback=initMap"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBd1Z7QILZqANje0vMIv4ijTpg033XhUB0&libraries=places&callback=initMap"></script>
 </body>
 
 </html>
