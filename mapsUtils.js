@@ -136,7 +136,19 @@ function buildMap() {
         }
     });
 
+    window.directionsService = new google.maps.DirectionsService;
+    window.directionsDisplay = new google.maps.DirectionsRenderer;
+
+    initDirectionsDisplay();
+
     return map;
+}
+
+function initDirectionsDisplay() {
+    directionsDisplay.setMap(null);
+    directionsDisplay.setMap(map);
+    directionsDisplay.setPanel(null);
+    directionsDisplay.setPanel(document.getElementById("directions"));
 }
 
 function onMarkerClick(event, map) {
@@ -144,6 +156,7 @@ function onMarkerClick(event, map) {
     infoWindow.setOptions({ pixelOffset: new google.maps.Size(0, -30) });
     infoWindow.setContent(getInfoFromMarker(event));
     infoWindow.open(map);
+    showDirectionsFromFeatureToUserLocation(event.feature);
 }
 
 function getInfoFromMarker(marker) {
