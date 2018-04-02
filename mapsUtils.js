@@ -142,33 +142,34 @@ function buildMap() {
 function onMarkerClick(event, map) {
     infoWindow.setPosition(event.feature.getGeometry().get());
     infoWindow.setOptions({ pixelOffset: new google.maps.Size(0, -30) });
-    infoWindow.setContent(getInfoFromMarker(event));
+    getInfoFromMarker(event);
     infoWindow.open(map);
 }
 
 function getInfoFromMarker(marker) {
-    var address = geocodeLatLng(marker.latLng);
-    var content = content = '<div id="bodyContent">' +
-        '<p><b>Globant</b></p>' +
-        '</div>';
-    if (address) {
-        content = '<div id="bodyContent">' +
-        '<p><b>Globant ' + address + '</b></p>' +
-        '</div>';
-    }
-
-    return content;
-}
-
-function geocodeLatLng(latLng) {
-    var addresses;
-    var latlng = {lat: parseFloat(latLng.lat()), lng: parseFloat(latLng.lng())};
+    var latlng = {lat: parseFloat(marker.latLng.lat()), lng: parseFloat(marker.latLng.lng())};
     geocoder.geocode({'location': latlng}, function(results, status) {
         if (status === google.maps.GeocoderStatus.OK) {
             if (results[0]) {
-                addresses = results;
+                infoWindow.setContent(
+                    '<div><b>Globant ' + 
+                    buildGlobantLocation(results[0]) +
+                    '</b></div>');
             }
         }
     });
-    return addresses;
+}
+
+function buildGlobantLocation(location) {
+    return extractShortNameFrom(location.address_components, "locality") + '/' + extractShortNameFrom(location.address_components, "country");
+}
+
+function extractShortNameFrom(addressComponents, component) {
+    for (var i=0; i<addressComponents.length; i++)
+    {
+        if (addressComponents[i].types[0] == component) {
+            return addressComponents[i].short_name;
+        }
+    }
+    return '';
 }
