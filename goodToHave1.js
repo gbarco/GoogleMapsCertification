@@ -21,9 +21,10 @@ function initAutocomplete() {
             map.fitBounds(place.geometry.viewport);
         } else {
             map.setCenter(place.geometry.location);
-            map.setZoom(14); // Why 14? Because it looks good.
+            map.setZoom(6);
         }
         showCurrentPosition(place.geometry.location);
         currentPositionMarker.setVisible(true);
+        displayNearestLocations();
     });
 }
