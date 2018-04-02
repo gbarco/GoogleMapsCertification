@@ -34,8 +34,10 @@
     </style>
     <script src="locations.js"></script>
     <script src="mapsUtils.js"></script>
-    <script src="mustHaves4.js"></script>
-    <script src="mustHaves5.js"></script>
+    <script src="mustHave4.js"></script>
+    <script src="mustHave5.js"></script>
+    <script src="goodToHave1.js"></script>
+    <script src="goodToHave2.js"></script>
 </head>
 
 <body style="margin:0px; padding:0px;" onload="initMap()">
@@ -86,7 +88,7 @@
             map = buildMap();
 
             currentPositionMarker = new google.maps.Marker;
- 
+
             infoWindow = new google.maps.InfoWindow;
             geocoder = new google.maps.Geocoder;
             searchButton = document.getElementById("searchButton").onclick = searchLocations;
@@ -137,13 +139,13 @@
                     window.alert("No details available for input: '" + place.name + "'");
                     return;
                 }
-          
+
                 // If the place has a geometry, then present it on a map.
                 if (place.geometry.viewport) {
                     map.fitBounds(place.geometry.viewport);
                 } else {
                     map.setCenter(place.geometry.location);
-                    map.setZoom(14);  // Why 14? Because it looks good.
+                    map.setZoom(14); // Why 14? Because it looks good.
                 }
                 showCurrentPosition(place.geometry.location);
                 currentPositionMarker.setVisible(true);
@@ -153,8 +155,7 @@
             showFeatureDistanceFromUserLocation();
         }
 
-        function searchLocations() {
-        }
+        function searchLocations() {}
 
         function doNothing() {}
     </script>
