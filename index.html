@@ -85,6 +85,11 @@
             map.data.setStyle(function(feature){
                 return {icon: image};
             });
+            
+            map.data.addListener('click', function(event) {
+                onMarkerClick(event, map);
+            });
+
 /*
             for (i = 0; i < locations.length; i++) {
                 aMarker = new google.maps.Marker({
