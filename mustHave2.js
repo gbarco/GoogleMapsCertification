@@ -13,6 +13,20 @@ function displayAllLocations() {
     };
 
     map.data.loadGeoJson('mustHave1.json');
+    map.data.forEach(function(feature){
+        feature.setProperty('globantOffice', '');
+        var latlng = { lat: parseFloat(feature.lat()), lng: parseFloat(feature.lng()) };
+        geocoder.geocode({ 'location': latlng }, function(results, status) {
+            if (status === google.maps.GeocoderStatus.OK) {
+                if (results[0]) {
+                    feature.setProperty('globantOffice',
+                        'Globant ' +
+                        buildGlobantLocation(results[0]));
+                }
+            }
+        });
+    });
+    
     map.data.setStyle(function(feature) {
         return {
             icon: image
@@ -31,8 +45,9 @@ function displayNearestLocations() {
 }
 
 function showNearestLocations(distanceToLocation) {
+    var topNSelected = document.getElementById("topLocations") ? document.getElementById("topLocations").value : 1 ;
     distanceToLocation.sort(function(a, b) { return a.distance - b.distance });
-    nearestLocations = distanceToLocation.splice(0, distanceToLocation.length > 10 ? 10 : distanceToLocation.length);
+    nearestLocations = distanceToLocation.splice(0, distanceToLocation.length > topNSelected ? topNSelected : distanceToLocation.length);
     nearestLocations.forEach(function(element) {
         addStringToDivInnerHTML(nearestLocationsPanel,
             "To " + element.feature.lat() + "," + element.feature.lng() + " " +

@@ -63,6 +63,15 @@
         <input type="text" id="addressInput" size="50" />
     </div>
     <div>
+        <label for="topLocations">Select how many locations you want to see the distance:</label>
+        <select id="topLocations" onchange="displayNearestLocations();">
+            <option value="38">All</option>
+            <option value="30">30</option>
+            <option value="20">20</option>
+            <option value="10" selected>10</option>
+        </select>
+    </div>
+    <div>
         <div class="legendPanel nearestLocationsPanel">Nearest Locations</div>
         <div class="legendPanel directionsPanel">Driving Directions</div>
         <div class="legendPanel drivingDistancePanel">Driving Distance</div>
